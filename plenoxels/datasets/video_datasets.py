@@ -135,7 +135,7 @@ class Video360Dataset(BaseDataset):
         else:
             raise ValueError(datadir)
 
-        self.timestamps = timestamps
+        self8.timestamps = timestamps
         if split == 'train':
             self.timestamps = self.timestamps[:, None, None].repeat(
                 1, intrinsics.height, intrinsics.width).reshape(-1)  # [n_frames * h * w]
