@@ -137,7 +137,7 @@ class BaseTrainer(abc.ABC):
         """Override this if some very specific training procedure is needed."""
         if self.global_step is None:
             self.global_step = 0
-        log.info(f"Starting training from step {self.global_step + 1}")
+        log.info(f"Starting training from step {self.global_step + 1}") # 可以续着来
         pb = tqdm(initial=self.global_step, total=self.num_steps)
         try:
             self.pre_epoch()
