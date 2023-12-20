@@ -6,23 +6,21 @@ import pprint
 import sys
 from typing import List, Dict, Any
 import tempfile
-
 import numpy as np
-
 
 def get_freer_gpu():
     with tempfile.TemporaryDirectory() as tmpdir:
-        tmp_fname = os.path.join(tmpdir, "tmp")
-        os.system(f'nvidia-smi -q -d Memory |grep -A5 GPU|grep Free >"{tmp_fname}"')
+        tmp_fname = os.path.join(tmpdir, "tmp") # 创建临时文件tmp
+        os.system(f'nvidia-smi -q -d Memory |grep -A5 GPU|grep Free >"{tmp_fname}"') # 查询nvidia内存信息，找到每个GPU空闲内存，结果写入tmp中
         if os.path.isfile(tmp_fname):
-            memory_available = [int(x.split()[2]) for x in open(tmp_fname, 'r').readlines()]
+            memory_available = [int(x.split()[2]) for x in open(tmp_fname, 'r').readlines()] # 提取每一行中的第三列（表示空闲内存）并将其转换为整数
             if len(memory_available) > 0:
-                return np.argmax(memory_available)
+                return np.argmax(memory_available) # 返回最大可获取的内存
     return None  # The grep doesn't work with all GPUs. If it fails we ignore it.
 
 gpu = get_freer_gpu()
 if gpu is not None:
-    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu)
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu) # 索引设置为环境变量 CUDA_VISIBLE_DEVICES，该环境变量用于指定 CUDA 可见的 GPU 设备
     print(f"CUDA_VISIBLE_DEVICES set to {gpu}")
 else:
     print(f"Did not set GPU.")
@@ -35,8 +33,7 @@ from plenoxels.runners import static_trainer
 from plenoxels.utils.create_rendering import render_to_path, decompose_space_time
 from plenoxels.utils.parse_args import parse_optfloat
 
-
-def setup_logging(log_level=logging.INFO):
+def setup_logging(log_level=logging.INFO): # 可以使用 logging 模块记录日志，而不必在每个模块或每个脚本中都配置一遍
     handlers = [logging.StreamHandler(sys.stdout)]
     logging.basicConfig(level=log_level,
                         format='%(asctime)s|%(levelname)8s| %(message)s',
